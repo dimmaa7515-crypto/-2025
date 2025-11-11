@@ -1,0 +1,2403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Сравнение данных по годам</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#f7fafc;
+      --card:#ffffff;
+      --muted:#6b7280;
+      --accent-1:#0ea5ff;
+      --accent-2:#2563eb;
+      --accent-3:#7c3aed;
+      --success:#10b981;
+      --danger:#ef4444;
+      --warning:#f59e0b;
+      --glass: rgba(15,23,42,0.03);
+      --btn-text:#ffffff;
+      --text:#0b1220;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+      color-scheme: light;
+      color: var(--text);
+    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    .dropdown {
+      position: relative;
+      display: inline-block;
+      margin-left: auto;
+    }
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #fff;
+      min-width: 200px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1000;
+      border-radius: 8px;
+      padding: 8px 0;
+      border: 1px solid rgba(15,23,42,0.1);
+    }
+    .dropdown-content a {
+      color: var(--text);
+      padding: 10px 16px;
+      text-decoration: none;
+      display: block;
+      font-weight: 600;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    .dropdown-content a:hover {
+      background-color: rgba(239,68,68,0.1);
+    }
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#f8fafc 0%, #eef2f6 100%);font-size:14px}
+    .container{max-width:1200px;margin:16px auto;padding:12px}
+    header{display:flex;align-items:center;gap:16px;margin-bottom:18px;flex-wrap:wrap;position:relative}
+h1{font-size:20px;margin:0;color:var(--text); font-weight:700}
+    p.lead{margin:0;color:var(--muted);font-size:13px}
+    .progress-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: linear-gradient(90deg, rgba(37,99,235,0.08), rgba(124,58,237,0.05));
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      border: 1px solid rgba(37,99,235,0.12);
+      box-shadow: 0 4px 16px rgba(37,99,235,0.06);
+    }
+    .progress-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .progress-title {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .progress-value {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .progress-details {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .progress-detail {
+      flex: 1;
+      min-width: 120px;
+    }
+    .progress-label {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .progress-number {
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .progress-up {
+      color: var(--success);
+    }
+    .progress-down {
+      color: var(--danger);
+    }
+    .progress-neutral {
+      color: var(--muted);
+    }
+    .grid{display:grid;grid-template-columns:460px 1fr;gap:18px}
+    .panel{background:var(--card);border:1px solid rgba(15,23,42,0.06);padding:16px;border-radius:8px;box-shadow:0 10px 30px rgba(12,18,31,0.06)}
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:10px 16px;
+      border-radius:4px;
+      border:none;
+      cursor:pointer;
+      font-weight:700;
+      color:var(--text);
+      background:transparent;
+      transition:all 0.15s ease;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.08);
+    }
+    .btn svg{width:16px;height:16px;opacity:0.95}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,0.12);}
+    .btn:active{transform:translateY(1px);box-shadow:0 1px 4px rgba(0,0,0,0.12);filter:brightness(0.95);}
+    .btn--accent{
+      background:linear-gradient(90deg,var(--accent-2),var(--accent-1));
+      color:var(--btn-text);
+      box-shadow:0 4px 14px rgba(37,99,235,0.2);
+    }
+    .btn--accent:hover{box-shadow:0 6px 18px rgba(37,99,235,0.28);}
+    .btn--vivid{
+      background:linear-gradient(90deg,var(--accent-3),#fb7185);
+      color:var(--btn-text);
+      box-shadow:0 4px 14px rgba(124,58,237,0.2);
+    }
+    .btn--vivid:hover{box-shadow:0 6px 18px rgba(124,58,237,0.28);}
+    .btn--outline{
+      background:transparent;
+      border:2px solid rgba(15,23,42,0.12);
+      color:var(--muted);
+      font-weight:600;
+      box-shadow:0 2px 4px rgba(0,0,0,0.04);
+    }
+    .btn--outline:hover{border-color:rgba(15,23,42,0.2);background:rgba(15,23,42,0.02);}
+    .btn--success{
+      background:linear-gradient(90deg,var(--success),#34d399);
+      color:var(--btn-text);
+      box-shadow:0 4px 14px rgba(16,185,129,0.2);
+    }
+    .btn--success:hover{box-shadow:0 6px 18px rgba(16,185,129,0.28);}
+    .btn--danger{
+      background:linear-gradient(90deg,var(--danger),#fb7185);
+      color:var(--btn-text);
+      box-shadow:0 4px 14px rgba(239,68,68,0.2);
+    }
+    .btn--danger:hover{box-shadow:0 6px 18px rgba(239,68,68,0.28);}
+    .small{
+      font-size:12px;
+      padding:6px 12px;
+      font-weight:600;
+    }
+    .file-btn{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px 16px;
+      border-radius:4px;
+      font-weight:800;
+      color:var(--btn-text);
+      cursor:pointer;
+      background:linear-gradient(90deg,#7c3aed,#2563eb);
+      box-shadow:0 4px 14px rgba(37,99,235,0.2);
+      width:100%;
+      font-size:13px;
+      text-transform:uppercase;
+      letter-spacing:0.5px;
+    }
+    .file-btn:hover{box-shadow:0 6px 18px rgba(37,99,235,0.28);}
+    .file-btn:active{transform:translateY(1px);box-shadow:0 2px 8px rgba(37,99,235,0.2);}
+    @keyframes pulse{0%{opacity:1}50%{opacity:0.7}100%{opacity:1}}
+    .file-btn .dot{width:9px;height:9px;border-radius:999px;background:#fff;opacity:0.95}
+    @keyframes pulseFast{0%{box-shadow:0 0 0 0 rgba(124,58,237,0.35)}70%{box-shadow:0 0 0 18px rgba(124,58,237,0.06)}100%{box-shadow:0 0 0 0 rgba(124,58,237,0)}}
+    .file-btn.pulse{animation:pulseFast 1.8s infinite}
+    .sheet-selector{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+    .sheet-options{display:flex;flex-wrap:wrap;gap:6px}
+    .sheet-option{
+      background:var(--glass);
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid rgba(15,23,42,0.04);
+      font-size:13px;
+      cursor:pointer;
+      transition:all 0.15s ease;
+    }
+    .sheet-option:hover{
+      background:rgba(37,99,235,0.08);
+      border-color:rgba(37,99,235,0.12);
+    }
+    .sheet-option.active{
+      background:linear-gradient(90deg,var(--accent-2),var(--accent-1));
+      color:white;
+      border-color:rgba(37,99,235,0.3);
+      box-shadow:0 4px 12px rgba(37,99,235,0.12);
+    }
+    .table-panel{display:flex;flex-direction:column;height:800px}
+    .table-head{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:16px;
+      flex-wrap:wrap;
+    }
+    .search{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .table-wrap{
+      overflow-x:auto;
+      overflow-y:auto;
+      background:linear-gradient(180deg, rgba(15,23,42,0.01), rgba(15,23,42,0.005));
+      border-radius:8px;
+      padding:12px;
+      border:1px solid rgba(15,23,42,0.04);
+      flex:3;
+    }
+    table{width:100%;border-collapse:collapse;font-size:13px;color:var(--text);min-width:600px}
+    thead th{
+      position:sticky;
+      top:0;
+      background:linear-gradient(180deg,#fff,#fbfdff);
+      z-index:2;
+      padding:12px 8px;
+      border-bottom:2px solid rgba(37,99,235,0.06);
+      text-align:left;
+      font-weight:700;
+    }
+    tbody tr{
+      border-bottom:1px dashed rgba(15,23,42,0.03);
+      cursor:pointer;
+      transition:background 0.15s ease;
+    }
+    tbody tr:hover{
+      background:linear-gradient(90deg, rgba(37,99,235,0.03), rgba(124,58,237,0.01));
+    }
+    td{padding:10px 8px;vertical-align:middle}
+    th.sortable{cursor:pointer;user-select:none;}
+    th .sort-ind{opacity:0.6;margin-left:6px;font-size:11px}
+    .chip{
+      background:var(--glass);
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid rgba(15,23,42,0.04);
+      font-weight:700;
+      font-size:13px;
+    }
+    .details{
+      padding:12px;
+      background:linear-gradient(180deg, rgba(15,23,42,0.01), rgba(15,23,42,0.005));
+      border-radius:8px;
+      border:1px solid rgba(15,23,42,0.04);
+    }
+    .muted{color:var(--muted);font-size:13px}
+    .share-cell {
+      font-weight:600;
+      text-align:right;
+      background:linear-gradient(90deg, rgba(37,99,235,0.1), rgba(37,99,235,0.3)) 0% 0 / 0% 100% no-repeat;
+      transition:background 0.3s ease;
+    }
+    @keyframes glow-pulse {
+      0%{box-shadow:0 0 0 0 rgba(6,95,70,0.4)}
+      50%{box-shadow:0 0 0 8px rgba(6,95,70,0.1)}
+      100%{box-shadow:0 0 0 0 rgba(6,95,70,0)}
+    }
+    .glow-pulse {
+      animation:glow-pulse 2.5s infinite;
+      border:2px solid rgba(6,95,70,0.3);
+    }
+    .year-comparison {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .year-tab {
+      padding: 8px 16px;
+      border-radius: 4px;
+      background: rgba(15,23,42,0.04);
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+    .year-tab:hover {
+      background: rgba(15,23,42,0.08);
+    }
+    .year-tab.active {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      color: white;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.12);
+    }
+    .diff-cell {
+      font-weight: 600;
+    }
+    .diff-up {
+      color: var(--success);
+    }
+    .diff-down {
+      color: var(--danger);
+    }
+    .diff-neutral {
+      color: var(--muted);
+    }
+    /* === СТИЛИ ДЛЯ ВЫБОРА МЕСЯЦЕВ === */
+    .month-range-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-left: auto;
+    }
+    .month-range-label {
+      font-size: 13px;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .month-range-input {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: 1px solid rgba(15,23,42,0.12);
+      font-size: 13px;
+      min-width: 100px;
+    }
+    /* === СТИЛИ ДЛЯ ПЕРЕКЛЮЧАТЕЛЯ ГРАФИКОВ === */
+    .chart-selector {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .chart-tab {
+      padding: 6px 12px;
+      border-radius: 4px;
+      background: rgba(15,23,42,0.04);
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+    .chart-tab:hover {
+      background: rgba(15,23,42,0.08);
+    }
+    .chart-tab.active {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent-1));
+      color: white;
+      box-shadow: 0 2px 6px rgba(37,99,235,0.12);
+    }
+    @media (max-width:768px){
+      .container{padding:8px;margin:8px auto}
+      .grid{grid-template-columns:1fr;gap:12px}
+      .table-panel{height:auto;min-height:600px}
+      .table-wrap{flex:1}
+      #salesChart, #paretoChart, #heatmapChart{height:300px!important}
+      .btn{padding:8px 12px;font-size:12px;border-radius:4px}
+      .small{padding:4px 8px;font-size:11px}
+      h1{font-size:18px}
+      .file-btn{height:auto;padding:8px 12px;font-size:12px}
+      .table-head{flex-direction:column;align-items:stretch}
+      .search{flex-wrap:wrap}
+      .actions{margin-top:8px;justify-content:center}
+      .chip{font-size:12px;padding:6px 8px}
+      .panel{padding:12px}
+      thead th,td{padding:6px 4px;font-size:12px}
+      .year-comparison {
+        flex-direction: column;
+        gap: 8px;
+      }
+      .progress-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .progress-details {
+        width: 100%;
+        margin-top: 12px;
+      }
+      .progress-value {
+        font-size: 24px;
+      }
+      .progress-number {
+        font-size: 16px;
+      }
+      .progress-detail {
+        min-width: 100px;
+      }
+      .month-range-selector {
+        width: 100%;
+        margin-left: 0;
+        flex-wrap: wrap;
+      }
+      .month-range-input {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+    @media (max-width:480px){
+      .btn{padding:6px 10px;font-size:11px}
+      .file-btn{padding:6px 10px;font-size:11px}
+      .muted{font-size:12px}
+      .progress-value {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>СРАВНЕНИЕ ДАННЫХ ПО ГОДАМ 📊📈</h1>
+        <p class="lead">Загрузите два файла Excel за разные годы для сравнения показателей</p>
+      </div>
+      <div class="dropdown">
+        <button class="btn btn--danger" id="menuBtn">МЕНЮ ССЫЛОК</button>
+        <div class="dropdown-content" id="menuDropdown">
+          <a href="https://tg-alterra.ru/" class="menu-link" target="_blank">АЛЬТЕРРА</a>
+          <a href="https://znakooo.ru/" class="menu-link" target="_blank">ЗНАК</a>
+          <a href="https://bar.saturn.net/" class="menu-link" target="_blank">САТУРН</a>
+          <a href="https://barnaul.lemanapro.ru/" class="menu-link" target="_blank">ЛЕМАНА ПРО</a>
+          <a href="#" class="menu-link" target="_blank">Ссылка 5</a>
+          <a href="#" class="menu-link" target="_blank">Ссылка 6</a>
+        </div>
+      </div>
+      <button class="btn btn--accent" id="shareCalcBtn">Расчёт доли</button>
+      <!-- === БЛОК ВЫБОРА ДИАПАЗОНА МЕСЯЦЕВ === -->
+      <div class="month-range-selector" id="monthRangeSelector" style="display: none;">
+        <span class="month-range-label">Месяцы:</span>
+        <select id="startMonth" class="month-range-input"></select>
+        <span style="color: var(--muted);">—</span>
+        <select id="endMonth" class="month-range-input"></select>
+      </div>
+      <div id="shareCalcModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:10000;justify-content:center;align-items:center;">
+        <div style="background:white;padding:20px;border-radius:8px;max-width:500px;width:90%;">
+          <h3 style="margin-bottom:16px;">Калькулятор доли</h3>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+            <div>
+              <label style="display:block;margin-bottom:4px;font-size:13px;color:var(--muted);">Часть</label>
+              <input type="number" id="sharePart" style="width:100%;padding:8px;border-radius:4px;border:1px solid rgba(15,23,42,0.1);">
+            </div>
+            <div>
+              <label style="display:block;margin-bottom:4px;font-size:13px;color:var(--muted);">Целое</label>
+              <input type="number" id="shareWhole" style="width:100%;padding:8px;border-radius:4px;border:1px solid rgba(15,23,42,0.1);">
+            </div>
+          </div>
+          <button id="shareCalcSubmit" class="btn btn--accent" style="width:100%;margin-bottom:12px;">Рассчитать</button>
+          <div id="shareCalcResult" style="padding:12px;background:rgba(37,99,235,0.08);border-radius:4px;font-weight:600;text-align:center;display:none;"></div>
+          <button id="shareCalcClose" class="btn btn--outline" style="width:100%;margin-top:12px;">Закрыть</button>
+        </div>
+      </div>
+</header>
+<!-- Progress section -->
+    <div id="progressSection" class="progress-container" style="display: none;">
+      <div class="progress-info">
+        <div class="progress-title">Прогресс текущего года к предыдущему</div>
+        <div id="progressMainValue" class="progress-value">—</div>
+      </div>
+      <div class="progress-details">
+        <div class="progress-detail">
+          <div class="progress-label">Текущий год</div>
+          <div id="progressCurrentYear" class="progress-number">0</div>
+        </div>
+        <div class="progress-detail">
+          <div class="progress-label">Предыдущий год</div>
+          <div id="progressPreviousYear" class="progress-number">0</div>
+        </div>
+        <div class="progress-detail">
+          <div class="progress-label">Изменение</div>
+          <div id="progressChange" class="progress-number">0</div>
+        </div>
+      </div>
+    </div>
+    <div class="grid">
+      <!-- left controls -->
+      <div class="panel">
+        <div class="controls">
+          <div class="year-comparison">
+            <div class="year-tab active" data-year="current">ТЕКУЩИЙ ГОД</div>
+            <div class="year-tab" data-year="previous">ПРЕДЫДУЩИЙ ГОД</div>
+            <div class="year-tab" data-year="compare">СРАВНЕНИЕ</div>
+          </div>
+          <div class="file-row">
+            <label for="file1" class="muted">Файл текущего года</label>
+            <input id="file1" type="file" accept=".xlsx,.xls,.csv" />
+            <label for="file1" class="file-btn pulse" title="Выберите файл Excel">Выбрать файл 1</label>
+          </div>
+          <div class="file-row" style="margin-top: 16px;">
+            <label for="file2" class="muted">Файл предыдущего года</label>
+            <input id="file2" type="file" accept=".xlsx,.xls,.csv" />
+            <label for="file2" class="file-btn pulse" title="Выберите файл Excel">Выбрать файл 2</label>
+          </div>
+          <div class="sheet-selector" id="sheetSelector" style="display:none; margin-top: 16px;">
+            <div class="muted">Выберите вкладку для анализа</div>
+            <div class="sheet-options" id="sheetOptions"></div>
+          </div>
+          <div style="margin-top: 16px;">
+            <label class="muted">Подгруппы (фильтр)</label>
+            <input id="subgroupSearch" type="text" placeholder="поиск подгрупп" class="glow-pulse" style="width:100%;padding:10px;margin-top:6px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px" />
+            <select id="subgroupSelect" multiple class="multiselect" style="margin-top:12px;width:100%;padding:8px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px"></select>
+            <div id="itemCount" class="muted" style="margin-top:8px;">Количество наименований: 0</div>
+          </div>
+          <div style="margin-top: 16px;">
+            <label class="muted">Поставщики (фильтр)</label>
+            <input id="supplierSearch" type="text" placeholder="поиск поставщиков" class="glow-pulse" style="width:100%;padding:10px;margin-top:6px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px" />
+            <select id="supplierSelect" multiple class="multiselect" style="margin-top:12px;width:100%;padding:8px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px"></select>
+          </div>
+          <div style="margin-top: 16px;">
+            <label class="muted">Минимальная доля (%)</label>
+            <input id="minShareFilter" type="number" min="0" max="100" step="0.01" placeholder="0.00" class="glow-pulse" style="width:100%;padding:10px;margin-top:6px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px" />
+            <div class="muted" style="margin-top:6px;font-size:12px">Фильтр: оставить строки, где доля хотя бы в одном месяце ≥ указанной</div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
+            <button id="selectAll" class="btn btn--accent small">Выбрать все</button>
+            <button id="deselectAll" class="btn btn--outline small">Снять выбор</button>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap">
+            <label class="muted">Вид</label>
+            <select id="viewMode" style="min-width:160px;flex:1;padding:10px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px">
+              <option value="group">Сумма по подгруппам</option>
+              <option value="product">По товарам</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:16px;align-items:center;flex-wrap:wrap">
+            <button id="stackToggle" class="btn btn--glass small">Стек / Групп</button>
+            <button id="downloadChart" class="btn btn--vivid small">Скачать</button>
+          </div>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <button id="exportCSV" class="btn btn--success">Экспорт</button>
+            <button id="resetBtn" class="btn btn--danger">Сброс</button>
+          </div>
+          <div style="margin-top:20px;">
+            <div class="muted">Поиск по таблице</div>
+            <input id="globalSearch" type="text" placeholder="Найти код, наименование, подгруппу..." class="glow-pulse" style="width:100%;padding:10px;margin-top:6px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px" />
+          </div>
+          <div style="display:flex;gap:10px;margin-top:20px;align-items:center;flex-wrap:wrap">
+            <label class="muted">Строк на странице</label>
+            <select id="pageSize" style="flex:1;padding:10px;border-radius:6px;border:2px solid rgba(15,23,42,0.08);font-size:13px">
+              <option>50</option>
+              <option>500</option>
+              <option selected>1000</option>
+              <option>2000</option>
+            </select>
+          </div>
+          <div style="margin-top:20px;" class="muted">Информация</div>
+          <div id="message">Загрузите файлы Excel, чтобы начать.</div>
+          <div id="sheetInfo" class="muted"></div>
+        </div>
+      </div>
+      <!-- right: table + chart -->
+      <div class="panel table-panel">
+        <div class="table-head">
+          <div class="search">
+            <div class="chip">Текущий вид: <span id="currentView">Сумма по подгруппам</span></div>
+            <div class="muted">/</div>
+            <div class="muted">Элементов: <strong id="countLabel">0</strong></div>
+          </div>
+          <div class="actions">
+            <button id="prevPage" class="btn btn--outline small">‹</button>
+            <div class="muted" id="pageInfo" style="padding:0 12px;font-weight:600">1 / 1</div>
+            <button id="nextPage" class="btn btn--outline small">›</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table id="dataTable">
+            <thead></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <!-- === НОВЫЙ БЛОК ПЕРЕКЛЮЧЕНИЯ ГРАФИКОВ === -->
+        <div class="chart-selector">
+          <div class="chart-tab active" data-chart="main">Основной</div>
+          <div class="chart-tab" data-chart="pareto">Парето</div>
+          <div class="chart-tab" data-chart="heatmap">Тепловая карта</div>
+        </div>
+        <div style="display: flex; gap: 16px; margin-top: 16px; flex: 2;">
+          <!-- Основной график -->
+          <div style="height:400px; background:transparent; padding:12px; border-radius:8px; flex: 2; display: block;" id="mainChartContainer">
+            <canvas id="salesChart"></canvas>
+          </div>
+          <!-- Диаграмма Парето -->
+          <div style="height:400px; background:transparent; padding:12px; border-radius:8px; flex: 2; display: none;" id="paretoChartContainer">
+            <canvas id="paretoChart"></canvas>
+          </div>
+          <!-- Тепловая карта -->
+          <div style="height:400px; background:transparent; padding:12px; border-radius:8px; flex: 2; display: none;" id="heatmapChartContainer">
+            <canvas id="heatmapChart"></canvas>
+          </div>
+          <!-- Диаграмма Ганта прогресса -->
+          <div style="height:400px; background:var(--card); padding:12px; border-radius:8px; border:1px solid rgba(15,23,42,0.06); flex: 1;">
+            <h3 style="font-size:14px; margin-bottom:12px; text-align:center;">Прогресс по годам</h3>
+            <canvas id="ganttChart"></canvas>
+          </div>
+        </div>
+</div>
+    </div>
+    <div style="max-width:1200px;margin:18px auto;display:grid;grid-template-columns:1fr;gap:18px">
+      <div class="panel">
+        <div class="right-grid">
+          <div class="summary">
+            <div>
+              <div class="muted">Выбранный элемент</div>
+              <div id="detailTitle">—</div>
+              <div class="muted" id="detailSub">—</div>
+            </div>
+            <div style="margin-left:auto">
+              <div class="muted">Общая сумма</div>
+              <div id="detailTotal">0</div>
+            </div>
+          </div>
+          <div class="details">
+            <canvas id="detailChart" height="120"></canvas>
+            <div style="display:flex;gap:10px;margin-top:12px;flex-wrap:wrap">
+              <button id="clearSelection" class="btn btn--outline small">Сброс выбора</button>
+            </div>
+          </div>
+          <div class="muted">Подсказки</div>
+          <ul style="margin:0 0 0 18px;color:var(--muted);font-size:13px">
+            <li>Клик по заголовку столбца — сортировка.</li>
+            <li>Клик по строке — детальный просмотр товара.</li>
+            <li>Переключайтесь между вкладками "Текущий год", "Предыдущий год" и "Сравнение".</li>
+            <li>В режиме сравнения зелёный цвет означает рост, красный — снижение показателей.</li>
+            <li>Во вкладке "Парето" — анализ 80/20. В "Тепловой карте" — аномалии по цвету.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- libs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@2.0.1/dist/chartjs-chart-matrix.min.js"></script>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+      #shareCalcModal {
+        backdrop-filter: blur(4px);
+      }
+      #shareCalcResult {
+        transition: all 0.3s ease;
+      }
+    </style>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script>
+    (function(){
+      // Глобальные переменные для диаграмм
+      let ganttChart = null;
+      let paretoChart = null;
+      let heatmapChart = null;
+// элементы
+    const fileInput1 = document.getElementById('file1');
+    const fileInput2 = document.getElementById('file2');
+    const yearTabs = document.querySelectorAll('.year-tab');
+    const subgroupSelect = document.getElementById('subgroupSelect');
+    const supplierSelect = document.getElementById('supplierSelect');
+    const subgroupSearch = document.getElementById('subgroupSearch');
+    const supplierSearch = document.getElementById('supplierSearch');
+    const selectAllBtn = document.getElementById('selectAll');
+    const deselectAllBtn = document.getElementById('deselectAll');
+    const viewMode = document.getElementById('viewMode');
+    const stackToggle = document.getElementById('stackToggle');
+    const downloadChartBtn = document.getElementById('downloadChart');
+    const exportCSVBtn = document.getElementById('exportCSV');
+    const resetBtn = document.getElementById('resetBtn');
+    const globalSearch = document.getElementById('globalSearch');
+    const pageSizeSel = document.getElementById('pageSize');
+    const prevPageBtn = document.getElementById('prevPage');
+    const nextPageBtn = document.getElementById('nextPage');
+    const pageInfo = document.getElementById('pageInfo');
+    const countLabel = document.getElementById('countLabel');
+    const message = document.getElementById('message');
+    const currentViewLabel = document.getElementById('currentView');
+    const sheetSelector = document.getElementById('sheetSelector');
+    const sheetOptions = document.getElementById('sheetOptions');
+    const sheetInfo = document.getElementById('sheetInfo');
+    const itemCount = document.getElementById('itemCount');
+    const minShareFilter = document.getElementById('minShareFilter');
+    const progressSection = document.getElementById('progressSection');
+    const progressMainValue = document.getElementById('progressMainValue');
+    const progressCurrentYear = document.getElementById('progressCurrentYear');
+    const progressPreviousYear = document.getElementById('progressPreviousYear');
+    const progressChange = document.getElementById('progressChange');
+    const dataTable = document.getElementById('dataTable');
+    const thead = dataTable.querySelector('thead');
+    const tbody = dataTable.querySelector('tbody');
+    const detailTitle = document.getElementById('detailTitle');
+    const detailSub = document.getElementById('detailSub');
+    const detailTotal = document.getElementById('detailTotal');
+    const clearSelectionBtn = document.getElementById('clearSelection');
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    const detailCtx = document.getElementById('detailChart').getContext('2d');
+    const paretoCtx = document.getElementById('paretoChart').getContext('2d');
+    const heatmapCtx = document.getElementById('heatmapChart').getContext('2d');
+    // === ЭЛЕМЕНТЫ ПЕРЕКЛЮЧЕНИЯ ГРАФИКОВ ===
+    const chartTabs = document.querySelectorAll('.chart-tab');
+    const mainChartContainer = document.getElementById('mainChartContainer');
+    const paretoChartContainer = document.getElementById('paretoChartContainer');
+    const heatmapChartContainer = document.getElementById('heatmapChartContainer');
+    // === НОВЫЕ ЭЛЕМЕНТЫ ===
+    const monthRangeSelector = document.getElementById('monthRangeSelector');
+    const startMonthSelect = document.getElementById('startMonth');
+    const endMonthSelect = document.getElementById('endMonth');
+
+    // === === === ИНИЦИАЛИЗАЦИЯ ОБРАБОТЧИКОВ МЕНЮ И МОДАЛЬНОГО ОКНА === === ===
+    // Меню ссылок
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDropdown = document.getElementById('menuDropdown');
+
+    if (menuBtn && menuDropdown) {
+      menuBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menuDropdown.style.display = menuDropdown.style.display === 'block' ? 'none' : 'block';
+      });
+    }
+    document.addEventListener('click', function() {
+      if (menuDropdown) menuDropdown.style.display = 'none';
+    });
+
+    // Модальное окно "Расчёт доли"
+    const shareCalcBtn = document.getElementById('shareCalcBtn');
+    const shareCalcModal = document.getElementById('shareCalcModal');
+    const shareCalcClose = document.getElementById('shareCalcClose');
+    const shareCalcSubmit = document.getElementById('shareCalcSubmit');
+    const sharePart = document.getElementById('sharePart');
+    const shareWhole = document.getElementById('shareWhole');
+    const shareCalcResult = document.getElementById('shareCalcResult');
+
+    if (shareCalcBtn) {
+      shareCalcBtn.addEventListener('click', () => {
+        shareCalcModal.style.display = 'flex';
+      });
+    }
+    if (shareCalcClose) {
+      shareCalcClose.addEventListener('click', () => {
+        shareCalcModal.style.display = 'none';
+      });
+    }
+    if (shareCalcSubmit) {
+      shareCalcSubmit.addEventListener('click', () => {
+        const part = parseFloat(sharePart.value);
+        const whole = parseFloat(shareWhole.value);
+        if (isNaN(part) || isNaN(whole) || whole === 0) {
+          shareCalcResult.textContent = 'Введите корректные значения';
+          shareCalcResult.style.display = 'block';
+          return;
+        }
+        const share = (part / whole * 100).toFixed(2);
+        shareCalcResult.textContent = `Доля: ${share}%`;
+        shareCalcResult.style.display = 'block';
+      });
+    }
+    if (shareCalcModal) {
+      shareCalcModal.addEventListener('click', function(e) {
+        if (e.target === this) {
+          this.style.display = 'none';
+        }
+      });
+    }
+
+    // === === === КОНЕЦ ИНИЦИАЛИЗАЦИИ ОБРАБОТЧИКОВ === === ===
+
+    let currentYearItems = [];
+    let previousYearItems = [];
+    let months = [];
+    let filtered = [];
+    let sortState = {col:null,dir:1};
+    let page = 1;
+    let selectedSheets = [];
+    let currentWorkbook = null;
+    let previousWorkbook = null;
+    let currentMode = 'current'; // 'current', 'previous', 'compare'
+    let activeChartType = 'main'; // 'main', 'pareto', 'heatmap'
+    // Chart instances and options
+    let mainChart = null;
+    let detailChart = null;
+    let stacked = false;
+    const VIVID_PALETTE = [
+      '#2563eb', '#7c3aed', '#0ea5ff', '#ef4444', '#f97316', 
+      '#f59e0b', '#10b981', '#84cc16', '#06b6d4', '#8b5cf6',
+      '#ec4899', '#f43f5e', '#14b8a6', '#0d9488', '#059669'
+    ];
+    // === ВСПОМОГАТЕЛЬНАЯ ФУНКЦИЯ: ПОЛУЧЕНИЕ АКТИВНЫХ МЕСЯЦЕВ И ДАННЫХ ===
+    function getActiveRange() {
+      const start = parseInt(startMonthSelect.value) || 0;
+      const end = parseInt(endMonthSelect.value) || (months.length - 1);
+      return { start, end };
+    }
+    function sliceToActiveRange(items) {
+      if (!months || months.length === 0) return { activeMonths: [], activeItems: items };
+      const { start, end } = getActiveRange();
+      const activeMonths = months.slice(start, end + 1);
+      const activeItems = items.map(item => ({
+        ...item,
+        sales: item.sales.slice(start, end + 1)
+      }));
+      return { activeMonths, activeItems };
+    }
+    // === ФУНКЦИЯ РЕНДЕРА ДИАГРАММЫ ПАРЕТО ===
+    function renderParetoChart() {
+      if (!filtered || filtered.length === 0) return;
+      const activeMonths = window.activeMonths || months;
+      let itemsWithTotal = [];
+      if (viewMode.value === 'group') {
+        itemsWithTotal = filtered.map(f => ({
+          name: f.group,
+          total: f.sales.reduce((a, b) => a + b, 0)
+        }));
+      } else {
+        itemsWithTotal = filtered.map(f => ({
+          name: f.name,
+          total: f.sales.reduce((a, b) => a + b, 0)
+        }));
+      }
+      // Сортируем по убыванию
+      itemsWithTotal.sort((a, b) => b.total - a.total);
+      const labels = itemsWithTotal.map(i => i.name);
+      const totals = itemsWithTotal.map(i => i.total);
+      const totalSum = totals.reduce((a, b) => a + b, 0);
+      const cumulative = [];
+      let cum = 0;
+      for (let t of totals) {
+        cum += t;
+        cumulative.push(cum / totalSum * 100);
+      }
+      if (paretoChart) paretoChart.destroy();
+      paretoChart = new Chart(paretoCtx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Объём',
+              data: totals,
+              backgroundColor: VIVID_PALETTE[0],
+              yAxisID: 'y'
+            },
+            {
+              label: 'Накопленный %',
+              data: cumulative,
+              type: 'line',
+              borderColor: VIVID_PALETTE[1],
+              borderWidth: 2,
+              pointBackgroundColor: VIVID_PALETTE[1],
+              pointRadius: 2,
+              yAxisID: 'y1'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  if (context.datasetIndex === 0) {
+                    return `Объём: ${context.raw.toLocaleString('ru-RU')}`;
+                  } else {
+                    return `Накоплено: ${context.raw.toFixed(1)}%`;
+                  }
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              type: 'linear',
+              position: 'left',
+              beginAtZero: true,
+              title: { display: true, text: 'Объём' }
+            },
+            y1: {
+              type: 'linear',
+              position: 'right',
+              beginAtZero: true,
+              max: 100,
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: 'Накопленный %' }
+            }
+          }
+        }
+      });
+    }
+    // === ФУНКЦИЯ РЕНДЕРА ТЕПЛОВОЙ КАРТЫ ===
+    function renderHeatmap() {
+      if (!filtered || filtered.length === 0) return;
+      const activeMonths = window.activeMonths || months;
+      const labelsX = activeMonths;
+      const labelsY = viewMode.value === 'group' 
+        ? filtered.map(f => f.group) 
+        : filtered.map(f => f.name);
+      const data = [];
+      for (let i = 0; i < filtered.length; i++) {
+        const row = [];
+        for (let j = 0; j < activeMonths.length; j++) {
+          row.push(filtered[i].sales[j] || 0);
+        }
+        data.push(row);
+      }
+      // Нормализуем для цвета
+      const allValues = data.flat();
+      const maxVal = Math.max(...allValues);
+      const minVal = Math.min(...allValues);
+      const normalized = data.map(row => 
+        row.map(val => maxVal > minVal ? (val - minVal) / (maxVal - minVal) : 0)
+      );
+      const backgroundColors = normalized.map(row => 
+        row.map(norm => {
+          // Градиент от белого к синему
+          const r = 255;
+          const g = 255 - Math.floor(200 * norm);
+          const b = 255 - Math.floor(200 * norm);
+          return `rgb(${r},${g},${b})`;
+        })
+      );
+      if (heatmapChart) heatmapChart.destroy();
+      heatmapChart = new Chart(heatmapCtx, {
+        type: 'matrix',
+        data: {
+          datasets: [{
+            label: 'Тепловая карта',
+            data: data.map((row, y) => 
+              row.map((val, x) => ({ x, y, v: val }))
+            ).flat(),
+            backgroundColor: backgroundColors.flat(),
+            width: ({ chart }) => (chart.width / labelsX.length) * 0.9,
+            height: ({ chart }) => (chart.height / labelsY.length) * 0.9,
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.1)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  const val = context.raw.v;
+                  return `${labelsX[context.raw.x]}: ${val.toLocaleString('ru-RU')}`;
+                },
+                title: function(tooltipItems) {
+                  return labelsY[tooltipItems[0].raw.y];
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              type: 'category',
+              labels: labelsX,
+              grid: { display: false }
+            },
+            y: {
+              type: 'category',
+              labels: labelsY.reverse(), // чтобы первые были сверху
+              reverse: true,
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+    // === ПЕРЕКЛЮЧЕНИЕ ТИПА ГРАФИКА ===
+    chartTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        chartTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        activeChartType = tab.dataset.chart;
+        mainChartContainer.style.display = activeChartType === 'main' ? 'block' : 'none';
+        paretoChartContainer.style.display = activeChartType === 'pareto' ? 'block' : 'none';
+        heatmapChartContainer.style.display = activeChartType === 'heatmap' ? 'block' : 'none';
+        // Обновляем нужный график
+        if (activeChartType === 'pareto') {
+          renderParetoChart();
+        } else if (activeChartType === 'heatmap') {
+          renderHeatmap();
+        }
+      });
+    });
+    function createGanttChart() {
+      const ctx = document.getElementById('ganttChart').getContext('2d');
+      ganttChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: months,
+          datasets: [
+            {
+              label: 'Текущий год',
+              backgroundColor: VIVID_PALETTE[0],
+              borderColor: '#ffffff',
+              borderWidth: 2,
+              borderRadius: 4,
+              data: new Array(months.length).fill(0)
+            },
+            {
+              label: 'Предыдущий год',
+              backgroundColor: VIVID_PALETTE[1],
+              borderColor: '#ffffff',
+              borderWidth: 2,
+              borderRadius: 4,
+              data: new Array(months.length).fill(0)
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { 
+              position: 'top',
+              labels: {
+                usePointStyle: true,
+                font: {
+                  weight: '700',
+                  size: 13
+                }
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return `${context.dataset.label}: ${context.raw.toLocaleString('ru-RU')}`;
+                }
+              }
+            },
+            datalabels: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              grid: { display: false },
+              ticks: { color: '#0b1220', font: { weight: 600 } }
+            },
+            y: {
+              stacked: false,
+              grid: { color: 'rgba(12,18,31,0.04)' },
+              ticks: { color: '#0b1220', font: { weight: 600 } }
+            }
+          },
+          animation: { duration: 700, easing: 'easeOutQuart' }
+        }
+      });
+    }
+    function resetState(){
+      currentYearItems = []; 
+      previousYearItems = [];
+      months = []; 
+      filtered = []; 
+      sortState = {col:null,dir:1}; 
+      page = 1; 
+      message.textContent = 'Загрузите файлы Excel, чтобы начать.'; 
+      sheetInfo.textContent = '';
+      subgroupSelect.innerHTML = ''; 
+      supplierSelect.innerHTML = '';
+      tbody.innerHTML = ''; 
+      thead.innerHTML = ''; 
+      countLabel.textContent = '0'; 
+      currentViewLabel.textContent = 'Сумма по подгруппам'; 
+      sheetSelector.style.display = 'none';
+      sheetOptions.innerHTML = ''; 
+      selectedSheets = []; 
+      currentWorkbook = null;
+      previousWorkbook = null;
+      if(mainChart){ mainChart.destroy(); mainChart = null; createMainChart(); }
+      if(detailChart){ detailChart.destroy(); detailChart = null; }
+      if(paretoChart){ paretoChart.destroy(); paretoChart = null; }
+      if(heatmapChart){ heatmapChart.destroy(); heatmapChart = null; }
+      detailTitle.textContent = '—'; 
+      detailSub.textContent = '—'; 
+      detailTotal.textContent = '0';
+      itemCount.textContent = 'Количество наименований: 0';
+      minShareFilter.value = '';
+      document.querySelectorAll('label.file-btn').forEach(label => label.classList.add('pulse'));
+      progressSection.style.display = 'none';
+      progressMainValue.textContent = '—';
+      progressCurrentYear.textContent = '0';
+      progressPreviousYear.textContent = '0';
+      progressChange.textContent = '0';
+      // Сброс селектора месяцев
+      monthRangeSelector.style.display = 'none';
+      startMonthSelect.innerHTML = '';
+      endMonthSelect.innerHTML = '';
+    }
+    resetState();
+    function updateProgressInfo() {
+      if (!currentWorkbook || !previousWorkbook || filtered.length === 0) {
+        progressSection.style.display = 'none';
+        return;
+      }
+      const selectedSubgroups = Array.from(subgroupSelect.selectedOptions).map(o => o.value);
+      const selectedSuppliers = Array.from(supplierSelect.selectedOptions).map(o => o.value);
+      if (selectedSubgroups.length === 0 || selectedSuppliers.length === 0) {
+        progressSection.style.display = 'none';
+        return;
+      }
+      const { activeItems: activeCurrent } = sliceToActiveRange(currentYearItems);
+      const { activeItems: activePrevious } = sliceToActiveRange(previousYearItems);
+      let currentTotal = 0;
+      for (const item of activeCurrent) {
+        if (selectedSubgroups.includes(item.subgroup) && selectedSuppliers.includes(item.supplier)) {
+          currentTotal += item.sales.reduce((a, b) => a + b, 0);
+        }
+      }
+      let previousTotal = 0;
+      for (const item of activePrevious) {
+        if (selectedSubgroups.includes(item.subgroup) && selectedSuppliers.includes(item.supplier)) {
+          previousTotal += item.sales.reduce((a, b) => a + b, 0);
+        }
+      }
+      let change = 0;
+      let changePercent = 0;
+      if (previousTotal !== 0) {
+        change = currentTotal - previousTotal;
+        changePercent = (change / previousTotal) * 100;
+      }
+      progressSection.style.display = 'flex';
+      progressCurrentYear.textContent = currentTotal.toLocaleString('ru-RU');
+      progressPreviousYear.textContent = previousTotal.toLocaleString('ru-RU');
+      progressChange.textContent = (change >= 0 ? '+' : '') + change.toLocaleString('ru-RU');
+      if (change > 0) {
+        progressChange.className = 'progress-number progress-up';
+        progressMainValue.className = 'progress-value progress-up';
+      } else if (change < 0) {
+        progressChange.className = 'progress-number progress-down';
+        progressMainValue.className = 'progress-value progress-down';
+      } else {
+        progressChange.className = 'progress-number progress-neutral';
+        progressMainValue.className = 'progress-value progress-neutral';
+      }
+      if (previousTotal === 0) {
+        progressMainValue.textContent = 'Нет данных';
+      } else {
+        const percent = Math.abs(changePercent).toFixed(2);
+        if (changePercent > 0) {
+          progressMainValue.textContent = `+${percent}% ^`;
+        } else if (changePercent < 0) {
+          progressMainValue.textContent = `-${percent}% v`;
+        } else {
+          progressMainValue.textContent = '0%';
+        }
+      }
+    }
+    function createMainChart(){
+      if(mainChart) mainChart.destroy();
+      mainChart = new Chart(salesCtx, {
+        type: 'bar',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: { position: 'top', labels: { usePointStyle: true, font: { weight: '700', size: 13 } } },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              bodyFont: { weight: '600' },
+              titleFont: { weight: '700' },
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) label += ': ';
+                  const value = context.raw;
+                  label += Number(value).toLocaleString('ru-RU');
+                  if (viewMode.value === 'group' && context.dataset.monthTotals) {
+                    const monthIndex = context.dataIndex;
+                    const monthTotal = context.dataset.monthTotals[monthIndex] || 0;
+                    if (monthTotal > 0) {
+                      const share = (value / monthTotal * 100).toFixed(2);
+                      label += ` (${share}%)`;
+                    }
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: '#0b1220', font: { weight: 600 } },
+              stacked: stacked
+            },
+            y: {
+              beginAtZero: true, 
+              ticks: { color: '#0b1220', font: { weight: 600 } },
+              grid: { color: 'rgba(12,18,31,0.04)' },
+              stacked: stacked
+            }
+          },
+          animation: { duration: 700, easing: 'easeOutQuart' }
+        }
+      });
+    }
+    createMainChart();
+    function createDetailChart(){
+      if(detailChart) detailChart.destroy();
+      detailChart = new Chart(detailCtx, {
+        type: 'line',
+        data: { labels: [], datasets: [] },
+        options: {
+          responsive: true, 
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            x: { ticks: { color: '#0b1220' } }, 
+            y: { ticks: { color: '#0b1220' } }
+          },
+          elements: {
+            point: { radius: 4, hoverRadius: 6 },
+            line: { borderWidth: 3 }
+          }
+        }
+      });
+    }
+    // Year tabs switching
+    yearTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        yearTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentMode = tab.dataset.year;
+        applyFilters();
+      });
+    });
+    // File inputs handlers
+    fileInput1.addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      try {
+        const ab = await f.arrayBuffer();
+        currentWorkbook = XLSX.read(ab, {type: 'array'});
+        sheetSelector.style.display = 'block';
+        sheetOptions.innerHTML = '';
+        currentWorkbook.SheetNames.forEach((name, idx) => {
+          const btn = document.createElement('div');
+          btn.className = 'sheet-option';
+          btn.textContent = name;
+          btn.dataset.sheet = name;
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.sheet-option').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            updateSelectedSheets();
+          });
+          sheetOptions.appendChild(btn);
+        });
+        message.textContent = `Файл текущего года загружен. Выберите вкладку для анализа.`;
+        document.querySelector('label[for="file1"]').classList.remove('pulse');
+      } catch(err) { 
+        message.textContent = 'Ошибка чтения файла текущего года: '+(err.message||err); 
+      }
+    });
+    fileInput2.addEventListener('change', async (e) => {
+      const f = e.target.files && e.target.files[0];
+      if(!f) return;
+      try {
+        const ab = await f.arrayBuffer();
+        previousWorkbook = XLSX.read(ab, {type: 'array'});
+        message.textContent = `Файл предыдущего года загружен.`;
+        document.querySelector('label[for="file2"]').classList.remove('pulse');
+        if(currentWorkbook) {
+          updateSelectedSheets();
+        }
+      } catch(err) { 
+        message.textContent = 'Ошибка чтения файла предыдущего года: '+(err.message||err); 
+      }
+    });
+    function updateSelectedSheets() {
+      if(!currentWorkbook) return;
+      selectedSheets = Array.from(document.querySelectorAll('.sheet-option.active'))
+        .map(el => el.dataset.sheet);
+      if(selectedSheets.length === 0) {
+        sheetInfo.textContent = 'Выберите хотя бы одну вкладку';
+        return;
+      }
+      sheetInfo.textContent = `Выбрана вкладка: ${selectedSheets.join(', ')}`;
+      parseSelectedSheets();
+    }
+    function updateGanttChartByMonths() {
+      if (!currentWorkbook || !previousWorkbook || filtered.length === 0) return;
+      const selectedSubgroups = Array.from(subgroupSelect.selectedOptions).map(o => o.value);
+      const selectedSuppliers = Array.from(supplierSelect.selectedOptions).map(o => o.value);
+      if (selectedSubgroups.length === 0 || selectedSuppliers.length === 0) return;
+      const { activeMonths, activeItems: activeCurrent } = sliceToActiveRange(currentYearItems);
+      const { activeItems: activePrevious } = sliceToActiveRange(previousYearItems);
+      const currentMonthly = new Array(activeMonths.length).fill(0);
+      for (const item of activeCurrent) {
+        if (selectedSubgroups.includes(item.subgroup) && selectedSuppliers.includes(item.supplier)) {
+          for (let i = 0; i < activeMonths.length; i++) {
+            currentMonthly[i] += item.sales[i] || 0;
+          }
+        }
+      }
+      const previousMonthly = new Array(activeMonths.length).fill(0);
+      for (const item of activePrevious) {
+        if (selectedSubgroups.includes(item.subgroup) && selectedSuppliers.includes(item.supplier)) {
+          for (let i = 0; i < activeMonths.length; i++) {
+            previousMonthly[i] += item.sales[i] || 0;
+          }
+        }
+      }
+      if (!ganttChart) {
+        createGanttChart();
+      }
+      ganttChart.data.labels = activeMonths;
+      ganttChart.data.datasets = [
+        {
+          label: 'Текущий год',
+          data: currentMonthly,
+          backgroundColor: VIVID_PALETTE[0],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          borderRadius: 4
+        },
+        {
+          label: 'Предыдущий год',
+          data: previousMonthly,
+          backgroundColor: VIVID_PALETTE[1],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          borderRadius: 4
+        }
+      ];
+      ganttChart.update();
+    }
+    function parseSelectedSheets() {
+      currentYearItems = [];
+      previousYearItems = [];
+      months = [];
+      selectedSheets.forEach(sheetName => {
+        const sh = currentWorkbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(sh, {header: 1});
+        parseTable(data, sheetName, currentYearItems);
+      });
+      if(previousWorkbook) {
+        selectedSheets.forEach(sheetName => {
+          if(previousWorkbook.SheetNames.includes(sheetName)) {
+            const sh = previousWorkbook.Sheets[sheetName];
+            const data = XLSX.utils.sheet_to_json(sh, {header: 1});
+            parseTable(data, sheetName, previousYearItems);
+          }
+        });
+      }
+      if(currentYearItems.length === 0) {
+        message.textContent = 'Нет данных в выбранной вкладке';
+        return;
+      }
+      populateFilters(); 
+      page = 1; 
+      applyFilters(); 
+      updateProgressInfo();
+      const prevYearCount = previousYearItems.length;
+      const currYearCount = currentYearItems.length;
+      message.textContent = `Загружено ${currYearCount} строк текущего года и ${prevYearCount} строк предыдущего года.`;
+      // Заполнить селектор месяцев
+      populateMonthRangeSelector();
+    }
+    function populateMonthRangeSelector() {
+      if (months.length === 0) {
+        monthRangeSelector.style.display = 'none';
+        return;
+      }
+      monthRangeSelector.style.display = 'flex';
+      startMonthSelect.innerHTML = '';
+      endMonthSelect.innerHTML = '';
+      months.forEach((month, idx) => {
+        const opt1 = document.createElement('option');
+        opt1.value = idx;
+        opt1.textContent = month;
+        startMonthSelect.appendChild(opt1);
+        const opt2 = document.createElement('option');
+        opt2.value = idx;
+        opt2.textContent = month;
+        endMonthSelect.appendChild(opt2);
+      });
+      startMonthSelect.value = 0;
+      endMonthSelect.value = months.length - 1;
+    }
+    function parseTable(table, sheetName, targetArray) {
+      if(!table || table.length < 2) return;
+      const header = table[0]; 
+      if(header.length < 5) return;
+      if(months.length === 0) {
+        months = header.slice(4).map(h => h ? String(h) : 'Мес'); 
+      }
+      for(let r = 1; r < table.length; r++) {
+        const row = table[r]; 
+        if(!row || row.length === 0) continue;
+        const code = row[0] ?? ''; 
+        const name = row[1] ?? ''; 
+        const subgroup = (row[2] ?? '') || '(Без подгруппы)';
+        const supplier = (row[3] ?? '') || '(Без поставщика)';
+        const sales = [];
+        for(let i = 0; i < months.length; i++) {
+          const val = row[4+i]; 
+          const num = parseFloat(String(val ?? '').replace(',','.')) || 0; 
+          sales.push(num);
+        }
+        if(!code && !name && sales.every(v => v === 0)) continue;
+        targetArray.push({
+          code: String(code), 
+          name: String(name), 
+          subgroup: String(subgroup), 
+          supplier: String(supplier),
+          sales,
+          sheet: sheetName
+        });
+      }
+    }
+    function populateFilters(){ 
+      const subgroups = new Set();
+      const suppliers = new Set();
+      [...currentYearItems, ...previousYearItems].forEach(it => {
+        subgroups.add(it.subgroup || '(Без подгруппы)');
+        suppliers.add(it.supplier || '(Без поставщика)');
+      });
+      const sgArr = Array.from(subgroups).sort((a,b) => a.localeCompare(b,'ru')); 
+      const spArr = Array.from(suppliers).sort((a,b) => a.localeCompare(b,'ru')); 
+      subgroupSelect.innerHTML = sgArr.map(sg => 
+        `<option value="${sg}" selected>${sg}</option>`
+      ).join('');
+      supplierSelect.innerHTML = spArr.map(sp => 
+        `<option value="${sp}" selected>${sp}</option>`
+      ).join('');
+      updateItemCount();
+    }
+    function updateItemCount() {
+      const selSub = Array.from(subgroupSelect.selectedOptions).map(o => o.value);
+      const selSup = Array.from(supplierSelect.selectedOptions).map(o => o.value);
+      if (selSub.length === 0 || selSup.length === 0) {
+        itemCount.textContent = 'Количество наименований: 0';
+        return;
+      }
+      let totalItems = 0;
+      const itemsToCount = currentMode === 'previous' ? previousYearItems : currentYearItems;
+      for (const item of itemsToCount) {
+        if (selSub.includes(item.subgroup) && selSup.includes(item.supplier)) {
+          totalItems++;
+        }
+      }
+      itemCount.textContent = `Количество наименований: ${totalItems}`;
+    }
+    function applyFilters(){
+      const selSub = Array.from(subgroupSelect.selectedOptions).map(o => o.value);
+      const selSup = Array.from(supplierSelect.selectedOptions).map(o => o.value);
+      const q = globalSearch.value.trim().toLowerCase(); 
+      const minShare = parseFloat(minShareFilter.value) || 0;
+      const mode = viewMode.value;
+      const { activeMonths, activeItems: activeCurrent } = sliceToActiveRange(currentYearItems);
+      const { activeItems: activePrevious } = sliceToActiveRange(previousYearItems);
+      // Сохраняем активные месяцы глобально для рендеринга
+      window.activeMonths = activeMonths;
+      updateGanttChartByMonths();
+      if(currentMode === 'compare') {
+        applyComparisonFilters(selSub, selSup, q, minShare, mode, activeCurrent, activePrevious, activeMonths);
+      } else {
+        const sourceItems = currentMode === 'previous' ? activePrevious : activeCurrent;
+        if(mode === 'group'){
+          const map = new Map();
+          for(const it of sourceItems){ 
+            if(!selSub.includes(it.subgroup) || !selSup.includes(it.supplier)) continue; 
+            if(q){ 
+              const s = (it.code+' '+it.name+' '+it.subgroup+' '+it.supplier).toLowerCase(); 
+              if(!s.includes(q)) continue 
+            };
+            const key = it.subgroup || '(Без подгруппы)'; 
+            if(!map.has(key)) map.set(key, new Array(activeMonths.length).fill(0)); 
+            const arr = map.get(key);
+            for(let i = 0; i < activeMonths.length; i++) arr[i] += (it.sales[i] || 0);
+          }
+          filtered = []; 
+          for(const [k,v] of map.entries()){ 
+            if (minShare > 0) {
+              const monthTotals = new Array(activeMonths.length).fill(0);
+              for (const [kk, vv] of map.entries()) {
+                for (let i = 0; i < activeMonths.length; i++) {
+                  monthTotals[i] += vv[i];
+                }
+              }
+              let passes = false;
+              for (let i = 0; i < activeMonths.length; i++) {
+                if (monthTotals[i] > 0 && (v[i] / monthTotals[i] * 100) >= minShare) {
+                  passes = true;
+                  break;
+                }
+              }
+              if (!passes) continue;
+            }
+            filtered.push({group: k, sales: v}) 
+          }
+          renderTableGroup(activeMonths);
+        } else {
+          filtered = sourceItems.filter(it => 
+            selSub.includes(it.subgroup) && 
+            selSup.includes(it.supplier) &&
+            ((it.code+' '+it.name+' '+it.subgroup+' '+it.supplier).toLowerCase().includes(q))
+          );
+          if (minShare > 0) {
+            const monthTotals = new Array(activeMonths.length).fill(0);
+            for (const item of filtered) {
+              for (let i = 0; i < activeMonths.length; i++) {
+                monthTotals[i] += item.sales[i];
+              }
+            }
+            filtered = filtered.filter(item => {
+              for (let i = 0; i < activeMonths.length; i++) {
+                if (monthTotals[i] > 0 && (item.sales[i] / monthTotals[i] * 100) >= minShare) {
+                  return true;
+                }
+              }
+              return false;
+            });
+          }
+          renderTableProducts(activeMonths);
+        }
+      }
+      sortAndPaginate();
+      updateItemCount();
+      updateProgressInfo();
+      // Обновляем активный график
+      if (activeChartType === 'pareto') {
+        renderParetoChart();
+      } else if (activeChartType === 'heatmap') {
+        renderHeatmap();
+      }
+    }
+    function applyComparisonFilters(selSub, selSup, q, minShare, mode, activeCurrent, activePrevious, activeMonths) {
+      if(mode === 'group') {
+        const currentMap = new Map();
+        const previousMap = new Map();
+        for(const it of activeCurrent) {
+          if(!selSub.includes(it.subgroup) || !selSup.includes(it.supplier)) continue;
+          if(q && !(it.code+' '+it.name+' '+it.subgroup+' '+it.supplier).toLowerCase().includes(q)) continue;
+          const key = it.subgroup || '(Без подгруппы)';
+          if(!currentMap.has(key)) currentMap.set(key, new Array(activeMonths.length).fill(0));
+          const arr = currentMap.get(key);
+          for(let i = 0; i < activeMonths.length; i++) arr[i] += (it.sales[i] || 0);
+        }
+        for(const it of activePrevious) {
+          if(!selSub.includes(it.subgroup) || !selSup.includes(it.supplier)) continue;
+          if(q && !(it.code+' '+it.name+' '+it.subgroup+' '+it.supplier).toLowerCase().includes(q)) continue;
+          const key = it.subgroup || '(Без подгруппы)';
+          if(!previousMap.has(key)) previousMap.set(key, new Array(activeMonths.length).fill(0));
+          const arr = previousMap.get(key);
+          for(let i = 0; i < activeMonths.length; i++) arr[i] += (it.sales[i] || 0);
+        }
+        filtered = [];
+        const allGroups = new Set([...currentMap.keys(), ...previousMap.keys()]);
+        for(const group of allGroups) {
+          const currentSales = currentMap.get(group) || new Array(activeMonths.length).fill(0);
+          const previousSales = previousMap.get(group) || new Array(activeMonths.length).fill(0);
+          if (minShare > 0) {
+            const monthTotals = new Array(activeMonths.length).fill(0);
+            for (const sales of currentMap.values()) {
+              for (let i = 0; i < activeMonths.length; i++) {
+                monthTotals[i] += sales[i];
+              }
+            }
+            let passes = false;
+            for (let i = 0; i < activeMonths.length; i++) {
+              if (monthTotals[i] > 0 && (currentSales[i] / monthTotals[i] * 100) >= minShare) {
+                passes = true;
+                break;
+              }
+            }
+            if (!passes) continue;
+          }
+          filtered.push({
+            group,
+            currentSales,
+            previousSales,
+            diffs: activeMonths.map((_, i) => currentSales[i] - previousSales[i]),
+            changes: activeMonths.map((_, i) => {
+              if(previousSales[i] === 0) return 0;
+              return ((currentSales[i] - previousSales[i]) / previousSales[i]) * 100;
+            })
+          });
+        }
+        renderComparisonGroup(activeMonths);
+      } else {
+        filtered = [];
+        const currentMap = new Map();
+        for(const it of activeCurrent) {
+          if(!selSub.includes(it.subgroup) || !selSup.includes(it.supplier)) continue;
+          if(q && !(it.code+' '+it.name+' '+it.subgroup+' '+it.supplier).toLowerCase().includes(q)) continue;
+          currentMap.set(it.code, it);
+        }
+        const previousMap = new Map();
+        for(const it of activePrevious) {
+          if(!selSub.includes(it.subgroup) || !selSup.includes(it.supplier)) continue;
+          if(q && !(it.code+' '+it.name+' '+it.subgroup+' '+it.supplier).toLowerCase().includes(q)) continue;
+          previousMap.set(it.code, it);
+        }
+        const allCodes = new Set([...currentMap.keys(), ...previousMap.keys()]);
+        for(const code of allCodes) {
+          const currentItem = currentMap.get(code);
+          const previousItem = previousMap.get(code);
+          if (minShare > 0) {
+            const monthTotals = new Array(activeMonths.length).fill(0);
+            for (const item of activeCurrent) {
+              if(!selSub.includes(item.subgroup) || !selSup.includes(item.supplier)) continue;
+              for (let i = 0; i < activeMonths.length; i++) {
+                monthTotals[i] += item.sales[i];
+              }
+            }
+            if(currentItem) {
+              let passes = false;
+              for (let i = 0; i < activeMonths.length; i++) {
+                if (monthTotals[i] > 0 && (currentItem.sales[i] / monthTotals[i] * 100) >= minShare) {
+                  passes = true;
+                  break;
+                }
+              }
+              if (!passes) continue;
+            }
+          }
+          filtered.push({
+            code,
+            name: currentItem?.name || previousItem?.name || '',
+            subgroup: currentItem?.subgroup || previousItem?.subgroup || '',
+            supplier: currentItem?.supplier || previousItem?.supplier || '',
+            sheet: currentItem?.sheet || previousItem?.sheet || '',
+            currentSales: currentItem?.sales || new Array(activeMonths.length).fill(0),
+            previousSales: previousItem?.sales || new Array(activeMonths.length).fill(0),
+            diffs: activeMonths.map((_, i) => {
+              const curr = currentItem?.sales[i] || 0;
+              const prev = previousItem?.sales[i] || 0;
+              return curr - prev;
+            }),
+            changes: activeMonths.map((_, i) => {
+              const curr = currentItem?.sales[i] || 0;
+              const prev = previousItem?.sales[i] || 0;
+              if(prev === 0) return 0;
+              return ((curr - prev) / prev) * 100;
+            })
+          });
+        }
+        renderComparisonProducts(activeMonths);
+      }
+    }
+    function renderTableGroup(activeMonths){ 
+      thead.innerHTML=''; 
+      tbody.innerHTML=''; 
+      const tr = document.createElement('tr'); 
+      addTh(tr,'Подгруппа','group',true); 
+      for(let i=0;i<activeMonths.length;i++) {
+        addTh(tr, activeMonths[i], 'm'+i, true);
+        addTh(tr, activeMonths[i] + ' (%)', 'p'+i, true);
+      }
+      thead.appendChild(tr); 
+      countLabel.textContent = filtered.length; 
+      currentViewLabel.textContent = 'Сумма по подгруппам'; 
+    }
+    function renderTableProducts(activeMonths){ 
+      thead.innerHTML=''; 
+      tbody.innerHTML=''; 
+      const tr = document.createElement('tr'); 
+      addTh(tr,'Код','code',true); 
+      addTh(tr,'Наименование','name',true); 
+      addTh(tr,'Подгруппа','subgroup',true); 
+      addTh(tr,'Поставщик','supplier',true); 
+      addTh(tr,'Вкладка','sheet',false);
+      for(let i=0;i<activeMonths.length;i++) {
+        addTh(tr, activeMonths[i], 'm'+i, true);
+        addTh(tr, activeMonths[i] + ' (%)', 'p'+i, true);
+      }
+      thead.appendChild(tr); 
+      countLabel.textContent = filtered.length; 
+      currentViewLabel.textContent = 'По товарам'; 
+    }
+    function renderComparisonGroup(activeMonths) {
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+      const tr = document.createElement('tr');
+      addTh(tr, 'Подгруппа', 'group', true);
+      for(let i = 0; i < activeMonths.length; i++) {
+        addTh(tr, `${activeMonths[i]} (тек.)`, 'm'+i, true);
+        addTh(tr, `${activeMonths[i]} (пред.)`, 'p'+i, true);
+        addTh(tr, 'Разница', 'd'+i, true);
+        addTh(tr, 'Изменение %', 'c'+i, true);
+      }
+      thead.appendChild(tr);
+      countLabel.textContent = filtered.length;
+      currentViewLabel.textContent = 'Сравнение по подгруппам';
+    }
+    function renderComparisonProducts(activeMonths) {
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+      const tr = document.createElement('tr');
+      addTh(tr, 'Код', 'code', true);
+      addTh(tr, 'Наименование', 'name', true);
+      addTh(tr, 'Подгруппа', 'subgroup', true);
+      addTh(tr, 'Поставщик', 'supplier', true);
+      for(let i = 0; i < activeMonths.length; i++) {
+        addTh(tr, `${activeMonths[i]} (тек.)`, 'm'+i, true);
+        addTh(tr, `${activeMonths[i]} (пред.)`, 'p'+i, true);
+        addTh(tr, 'Разница', 'd'+i, true);
+        addTh(tr, 'Изменение %', 'c'+i, true);
+      }
+      thead.appendChild(tr);
+      countLabel.textContent = filtered.length;
+      currentViewLabel.textContent = 'Сравнение по товарам';
+    }
+    function addTh(tr, txt, colKey, sortable){ 
+      const th = document.createElement('th'); 
+      th.textContent = txt; 
+      if(sortable){ 
+        th.classList.add('sortable'); 
+        const span = document.createElement('span'); 
+        span.className = 'sort-ind'; 
+        span.textContent = '¦'; 
+        th.appendChild(span); 
+        th.addEventListener('click', () => { 
+          if(sortState.col === colKey) sortState.dir *= -1; 
+          else {sortState.col = colKey; sortState.dir = 1;} 
+          sortAndPaginate(); 
+        }); 
+      } 
+      tr.appendChild(th); 
+    }
+    function sortAndPaginate() { 
+      if(currentMode === 'compare') {
+        sortComparisonData();
+      } else if(viewMode.value === 'group') { 
+        sortGroupData(); 
+      } else { 
+        sortProductsData(); 
+      }
+      paginateAndRenderRows(); 
+      updateMainChart(); 
+      // Обновляем активный график
+      if (activeChartType === 'pareto') {
+        renderParetoChart();
+      } else if (activeChartType === 'heatmap') {
+        renderHeatmap();
+      }
+    }
+    function sortComparisonData() {
+      if(!sortState.col) return;
+      filtered.sort((a, b) => {
+        if(sortState.col === 'group' || sortState.col === 'code' || sortState.col === 'name' || sortState.col === 'subgroup' || sortState.col === 'supplier') {
+          return a[sortState.col].localeCompare(b[sortState.col], 'ru') * sortState.dir;
+        }
+        if(sortState.col.startsWith('m')) {
+          const idx = parseInt(sortState.col.slice(1));
+          const aVal = a.currentSales[idx] || 0;
+          const bVal = b.currentSales[idx] || 0;
+          return (aVal - bVal) * sortState.dir;
+        }
+        if(sortState.col.startsWith('p')) {
+          const idx = parseInt(sortState.col.slice(1));
+          const aVal = a.previousSales[idx] || 0;
+          const bVal = b.previousSales[idx] || 0;
+          return (aVal - bVal) * sortState.dir;
+        }
+        if(sortState.col.startsWith('d')) {
+          const idx = parseInt(sortState.col.slice(1));
+          const aVal = a.diffs[idx] || 0;
+          const bVal = b.diffs[idx] || 0;
+          return (aVal - bVal) * sortState.dir;
+        }
+        if(sortState.col.startsWith('c')) {
+          const idx = parseInt(sortState.col.slice(1));
+          const aVal = a.changes[idx] || 0;
+          const bVal = b.changes[idx] || 0;
+          return (aVal - bVal) * sortState.dir;
+        }
+        return 0;
+      });
+    }
+    function sortGroupData() {
+      if(!sortState.col) return;
+      filtered.sort((a, b) => { 
+        if(sortState.col === 'group') return a.group.localeCompare(b.group, 'ru') * sortState.dir; 
+        if(sortState.col.startsWith('m') || sortState.col.startsWith('p')) {
+          const idx = parseInt(sortState.col.slice(1)); 
+          return (a.sales[idx] - b.sales[idx]) * sortState.dir; 
+        }
+        return 0;
+      }); 
+    }
+    function sortProductsData() {
+      if(!sortState.col) return;
+      filtered.sort((a, b) => { 
+        if(sortState.col === 'code') return a.code.localeCompare(b.code, 'ru') * sortState.dir; 
+        if(sortState.col === 'name') return a.name.localeCompare(b.name, 'ru') * sortState.dir; 
+        if(sortState.col === 'subgroup') return a.subgroup.localeCompare(b.subgroup, 'ru') * sortState.dir; 
+        if(sortState.col === 'supplier') return a.supplier.localeCompare(b.supplier, 'ru') * sortState.dir; 
+        if(sortState.col.startsWith('m') || sortState.col.startsWith('p')) {
+          const idx = parseInt(sortState.col.slice(1)); 
+          return (a.sales[idx] - b.sales[idx]) * sortState.dir; 
+        }
+        return 0;
+      }); 
+    }
+    function paginateAndRenderRows() {
+      if(currentMode === 'compare') {
+        if(viewMode.value === 'group') {
+          paginateAndRenderComparisonGroup();
+        } else {
+          paginateAndRenderComparisonProducts();
+        }
+      } else if(viewMode.value === 'group') {
+        paginateAndRenderRowsGroup();
+      } else {
+        paginateAndRenderRowsProducts();
+      }
+    }
+    function paginateAndRenderRowsGroup() { 
+      tbody.innerHTML = ''; 
+      const ps = parseInt(pageSizeSel.value); 
+      const totalPages = Math.max(1, Math.ceil(filtered.length/ps)); 
+      if(page > totalPages) page = totalPages; 
+      const start = (page-1)*ps; 
+      const end = Math.min(filtered.length, start+ps); 
+      pageInfo.textContent = `${page} / ${totalPages}`; 
+      const monthTotals = new Array(window.activeMonths.length).fill(0);
+      for (const row of filtered) {
+        for (let i = 0; i < window.activeMonths.length; i++) {
+          monthTotals[i] += row.sales[i];
+        }
+      }
+      for(let i = start; i < end; i++) { 
+        const row = filtered[i]; 
+        const tr = document.createElement('tr'); 
+        tr.addEventListener('click', () => { showGroupDetail(row); }); 
+        const tdg = document.createElement('td'); 
+        tdg.textContent = row.group; 
+        tr.appendChild(tdg); 
+        for(let m = 0; m < window.activeMonths.length; m++) {
+          const tdVal = document.createElement('td'); 
+          tdVal.textContent = Number(row.sales[m]).toLocaleString('ru-RU'); 
+          tdVal.style.textAlign = 'right'; 
+          tr.appendChild(tdVal);
+          const share = monthTotals[m] > 0 ? (row.sales[m] / monthTotals[m] * 100) : 0;
+          const tdShare = document.createElement('td');
+          tdShare.textContent = share.toFixed(2) + '%';
+          tdShare.style.textAlign = 'right';
+          tdShare.style.fontWeight = '600';
+          tdShare.className = 'share-cell';
+          tdShare.style.background = `linear-gradient(90deg, rgba(37,99,235,0.1), rgba(37,99,235,0.3)) ${share}% 0, transparent ${share}% 0`;
+          tr.appendChild(tdShare);
+        }
+        tbody.appendChild(tr); 
+      } 
+    }
+    function paginateAndRenderRowsProducts(){ 
+      tbody.innerHTML = ''; 
+      const ps = parseInt(pageSizeSel.value); 
+      const totalPages = Math.max(1, Math.ceil(filtered.length/ps)); 
+      if(page > totalPages) page = totalPages; 
+      const start = (page-1)*ps; 
+      const end = Math.min(filtered.length, start+ps); 
+      pageInfo.textContent = `${page} / ${totalPages}`; 
+      const monthTotals = new Array(window.activeMonths.length).fill(0);
+      for (const item of filtered) {
+        for (let i = 0; i < window.activeMonths.length; i++) {
+          monthTotals[i] += item.sales[i];
+        }
+      }
+      for(let i = start; i < end; i++) { 
+        const it = filtered[i]; 
+        const tr = document.createElement('tr'); 
+        tr.addEventListener('click', () => { showProductDetail(it); }); 
+        const td1 = document.createElement('td'); 
+        td1.textContent = it.code; 
+        tr.appendChild(td1); 
+        const td2 = document.createElement('td'); 
+        td2.textContent = it.name; 
+        tr.appendChild(td2); 
+        const td3 = document.createElement('td'); 
+        td3.textContent = it.subgroup; 
+        tr.appendChild(td3);
+        const td4 = document.createElement('td');
+        td4.textContent = it.supplier;
+        tr.appendChild(td4);
+        const td5 = document.createElement('td');
+        td5.textContent = it.sheet;
+        tr.appendChild(td5);
+        for(let m = 0; m < window.activeMonths.length; m++) {
+          const tdVal = document.createElement('td'); 
+          tdVal.textContent = Number(it.sales[m]).toLocaleString('ru-RU'); 
+          tdVal.style.textAlign = 'right'; 
+          tr.appendChild(tdVal);
+          const share = monthTotals[m] > 0 ? (it.sales[m] / monthTotals[m] * 100) : 0;
+          const tdShare = document.createElement('td');
+          tdShare.textContent = share.toFixed(2) + '%';
+          tdShare.style.textAlign = 'right';
+          tdShare.style.fontWeight = '600';
+          tdShare.className = 'share-cell';
+          tdShare.style.background = `linear-gradient(90deg, rgba(37,99,235,0.1), rgba(37,99,235,0.3)) ${share}% 0, transparent ${share}% 0`;
+          tr.appendChild(tdShare);
+        }
+        tbody.appendChild(tr); 
+      } 
+    }
+    function paginateAndRenderComparisonGroup() {
+      tbody.innerHTML = '';
+      const ps = parseInt(pageSizeSel.value);
+      const totalPages = Math.max(1, Math.ceil(filtered.length/ps));
+      if(page > totalPages) page = totalPages;
+      const start = (page-1)*ps;
+      const end = Math.min(filtered.length, start+ps);
+      pageInfo.textContent = `${page} / ${totalPages}`;
+      for(let i = start; i < end; i++) {
+        const row = filtered[i];
+        const tr = document.createElement('tr');
+        tr.addEventListener('click', () => { showComparisonGroupDetail(row); });
+        const tdGroup = document.createElement('td');
+        tdGroup.textContent = row.group;
+        tr.appendChild(tdGroup);
+        for(let m = 0; m < window.activeMonths.length; m++) {
+          const tdCurrent = document.createElement('td');
+          tdCurrent.textContent = Number(row.currentSales[m]).toLocaleString('ru-RU');
+          tdCurrent.style.textAlign = 'right';
+          tr.appendChild(tdCurrent);
+          const tdPrev = document.createElement('td');
+          tdPrev.textContent = Number(row.previousSales[m]).toLocaleString('ru-RU');
+          tdPrev.style.textAlign = 'right';
+          tr.appendChild(tdPrev);
+          const tdDiff = document.createElement('td');
+          const diff = row.diffs[m];
+          tdDiff.textContent = (diff >= 0 ? '+' : '') + Number(diff).toLocaleString('ru-RU');
+          tdDiff.style.textAlign = 'right';
+          tdDiff.className = 'diff-cell ' + (diff > 0 ? 'diff-up' : (diff < 0 ? 'diff-down' : 'diff-neutral'));
+          tr.appendChild(tdDiff);
+          const tdChange = document.createElement('td');
+          const change = row.changes[m];
+          tdChange.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+          tdChange.style.textAlign = 'right';
+          tdChange.className = 'diff-cell ' + (change > 0 ? 'diff-up' : (change < 0 ? 'diff-down' : 'diff-neutral'));
+          tr.appendChild(tdChange);
+        }
+        tbody.appendChild(tr);
+      }
+    }
+    function paginateAndRenderComparisonProducts() {
+      tbody.innerHTML = '';
+      const ps = parseInt(pageSizeSel.value);
+      const totalPages = Math.max(1, Math.ceil(filtered.length/ps));
+      if(page > totalPages) page = totalPages;
+      const start = (page-1)*ps;
+      const end = Math.min(filtered.length, start+ps);
+      pageInfo.textContent = `${page} / ${totalPages}`;
+      for(let i = start; i < end; i++) {
+        const row = filtered[i];
+        const tr = document.createElement('tr');
+        tr.addEventListener('click', () => { showComparisonProductDetail(row); });
+        const tdCode = document.createElement('td');
+        tdCode.textContent = row.code;
+        tr.appendChild(tdCode);
+        const tdName = document.createElement('td');
+        tdName.textContent = row.name;
+        tr.appendChild(tdName);
+        const tdSubgroup = document.createElement('td');
+        tdSubgroup.textContent = row.subgroup;
+        tr.appendChild(tdSubgroup);
+        const tdSupplier = document.createElement('td');
+        tdSupplier.textContent = row.supplier;
+        tr.appendChild(tdSupplier);
+        for(let m = 0; m < window.activeMonths.length; m++) {
+          const tdCurrent = document.createElement('td');
+          tdCurrent.textContent = Number(row.currentSales[m]).toLocaleString('ru-RU');
+          tdCurrent.style.textAlign = 'right';
+          tr.appendChild(tdCurrent);
+          const tdPrev = document.createElement('td');
+          tdPrev.textContent = Number(row.previousSales[m]).toLocaleString('ru-RU');
+          tdPrev.style.textAlign = 'right';
+          tr.appendChild(tdPrev);
+          const tdDiff = document.createElement('td');
+          const diff = row.diffs[m];
+          tdDiff.textContent = (diff >= 0 ? '+' : '') + Number(diff).toLocaleString('ru-RU');
+          tdDiff.style.textAlign = 'right';
+          tdDiff.className = 'diff-cell ' + (diff > 0 ? 'diff-up' : (diff < 0 ? 'diff-down' : 'diff-neutral'));
+          tr.appendChild(tdDiff);
+          const tdChange = document.createElement('td');
+          const change = row.changes[m];
+          tdChange.textContent = (change >= 0 ? '+' : '') + change.toFixed(2) + '%';
+          tdChange.style.textAlign = 'right';
+          tdChange.className = 'diff-cell ' + (change > 0 ? 'diff-up' : (change < 0 ? 'diff-down' : 'diff-neutral'));
+          tr.appendChild(tdChange);
+        }
+        tbody.appendChild(tr);
+      }
+    }
+    function updateMainChart() {
+      if(currentMode === 'compare') {
+        updateMainChartComparison();
+      } else if(viewMode.value === 'group') {
+        updateMainChartGroup();
+      } else {
+        updateMainChartProducts();
+      }
+    }
+    function updateMainChartGroup() {
+      const groups = filtered.map(f => ({name: f.group, sum: f.sales.reduce((a,b) => a+b, 0), sales: f.sales})); 
+      groups.sort((a,b) => b.sum - a.sum);
+      const topN = 30; 
+      const top = groups.slice(0, topN);
+      const monthTotals = new Array(window.activeMonths.length).fill(0);
+      for (const row of filtered) {
+        for (let i = 0; i < window.activeMonths.length; i++) {
+          monthTotals[i] += row.sales[i];
+        }
+      }
+      const datasets = top.map((g, idx) => ({
+        label: g.name, 
+        data: g.sales,
+        backgroundColor: VIVID_PALETTE[idx % VIVID_PALETTE.length],
+        borderColor: '#ffffff',
+        borderWidth: 2,
+        borderRadius: 4,
+        barPercentage: 0.92,
+        categoryPercentage: 0.8,
+        monthTotals: monthTotals
+      }));
+      mainChart.data.labels = window.activeMonths; 
+      mainChart.data.datasets = datasets;
+      mainChart.options.scales.x.stacked = stacked;
+      mainChart.options.scales.y.stacked = stacked;
+      mainChart.update();
+    }
+    function updateMainChartProducts() {
+      const labels = window.activeMonths; 
+      const sums = new Array(window.activeMonths.length).fill(0); 
+      for(const it of filtered) {
+        for(let i = 0; i < window.activeMonths.length; i++) {
+          sums[i] += it.sales[i];
+        }
+      }
+      const monthTotals = [...sums];
+      mainChart.data.labels = labels;
+      mainChart.data.datasets = [{
+        label: 'Общая сумма', 
+        data: sums,
+        backgroundColor: VIVID_PALETTE[0],
+        borderColor: '#ffffff',
+        borderWidth: 2,
+        borderRadius: 4,
+        barPercentage: 0.92,
+        categoryPercentage: 0.8,
+        monthTotals: monthTotals
+      }];
+      mainChart.options.scales.x.stacked = false;
+      mainChart.update();
+    }
+    function updateMainChartComparison() {
+      if(viewMode.value === 'group') {
+        const topGroups = filtered
+          .map(f => ({
+            name: f.group,
+            sum: f.currentSales.reduce((a,b) => a+b, 0) + f.previousSales.reduce((a,b) => a+b, 0),
+            currentSales: f.currentSales,
+            previousSales: f.previousSales
+          }))
+          .sort((a,b) => b.sum - a.sum)
+          .slice(0, 15);
+        const currentDatasets = {
+          label: 'Текущий год',
+          data: window.activeMonths.map((_, i) => 
+            topGroups.reduce((sum, group) => sum + group.currentSales[i], 0)
+          ),
+          backgroundColor: VIVID_PALETTE[0],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          borderRadius: 4,
+          barPercentage: 0.92,
+          categoryPercentage: 0.8
+        };
+        const previousDatasets = {
+          label: 'Предыдущий год',
+          data: window.activeMonths.map((_, i) => 
+            topGroups.reduce((sum, group) => sum + group.previousSales[i], 0)
+          ),
+          backgroundColor: VIVID_PALETTE[1],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          borderRadius: 4,
+          barPercentage: 0.92,
+          categoryPercentage: 0.8
+        };
+        mainChart.data.labels = window.activeMonths;
+        mainChart.data.datasets = [currentDatasets, previousDatasets];
+        mainChart.options.scales.x.stacked = stacked;
+        mainChart.options.scales.y.stacked = stacked;
+        mainChart.update();
+      } else {
+        const currentSums = new Array(window.activeMonths.length).fill(0);
+        const previousSums = new Array(window.activeMonths.length).fill(0);
+        for(const item of filtered) {
+          for(let i = 0; i < window.activeMonths.length; i++) {
+            currentSums[i] += item.currentSales[i] || 0;
+            previousSums[i] += item.previousSales[i] || 0;
+          }
+        }
+        const currentDataset = {
+          label: 'Текущий год',
+          data: currentSums,
+          backgroundColor: VIVID_PALETTE[0],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          borderRadius: 4,
+          barPercentage: 0.92,
+          categoryPercentage: 0.8
+        };
+        const previousDataset = {
+          label: 'Предыдущий год',
+          data: previousSums,
+          backgroundColor: VIVID_PALETTE[1],
+          borderColor: '#ffffff',
+          borderWidth: 2,
+          borderRadius: 4,
+          barPercentage: 0.92,
+          categoryPercentage: 0.8
+        };
+        mainChart.data.labels = window.activeMonths;
+        mainChart.data.datasets = [currentDataset, previousDataset];
+        mainChart.options.scales.x.stacked = stacked;
+        mainChart.options.scales.y.stacked = stacked;
+        mainChart.update();
+      }
+    }
+    function showProductDetail(it) { 
+      detailTitle.textContent = `${it.code} — ${it.name}`; 
+      detailSub.textContent = `${it.subgroup} (${it.supplier})`; 
+      const total = it.sales.reduce((a,b) => a+b, 0); 
+      detailTotal.textContent = total.toLocaleString('ru-RU'); 
+      if(!detailChart) createDetailChart(); 
+      detailChart.data.labels = window.activeMonths; 
+      detailChart.data.datasets = [{
+        label: it.name, 
+        data: it.sales,
+        backgroundColor: rgbaFrom(VIVID_PALETTE[0], 0.12), 
+        borderColor: VIVID_PALETTE[0], 
+        borderWidth: 3, 
+        tension: 0.28, 
+        pointBackgroundColor: VIVID_PALETTE[0]
+      }]; 
+      detailChart.update(); 
+    }
+    function showGroupDetail(row) { 
+      detailTitle.textContent = row.group; 
+      detailSub.textContent = 'Подгруппа — суммарно'; 
+      const groupTotal = row.sales.reduce((a,b) => a+b, 0); 
+      detailTotal.textContent = groupTotal.toLocaleString('ru-RU'); 
+      if(!detailChart) createDetailChart(); 
+      detailChart.data.labels = window.activeMonths; 
+      detailChart.data.datasets = [{
+        label: row.group, 
+        data: row.sales,
+        backgroundColor: rgbaFrom(VIVID_PALETTE[2], 0.12), 
+        borderColor: VIVID_PALETTE[2], 
+        borderWidth: 3, 
+        tension: 0.28, 
+        pointBackgroundColor: VIVID_PALETTE[2]
+      }]; 
+      detailChart.update(); 
+    }
+    function showComparisonGroupDetail(row) {
+      detailTitle.textContent = row.group;
+      detailSub.textContent = 'Сравнение по годам';
+      const currentTotal = row.currentSales.reduce((a,b) => a+b, 0);
+      const previousTotal = row.previousSales.reduce((a,b) => a+b, 0);
+      const diffTotal = currentTotal - previousTotal;
+      const changeTotal = previousTotal > 0 ? ((currentTotal - previousTotal) / previousTotal * 100) : 0;
+      detailTotal.textContent = `${currentTotal.toLocaleString('ru-RU')} (${diffTotal >= 0 ? '+' : ''}${diffTotal.toLocaleString('ru-RU')}, ${changeTotal >= 0 ? '+' : ''}${changeTotal.toFixed(2)}%)`;
+      if(!detailChart) createDetailChart();
+      detailChart.data.labels = window.activeMonths;
+      detailChart.data.datasets = [
+        {
+          label: 'Текущий год',
+          data: row.currentSales,
+          backgroundColor: rgbaFrom(VIVID_PALETTE[0], 0.12),
+          borderColor: VIVID_PALETTE[0],
+          borderWidth: 3,
+          tension: 0.28,
+          pointBackgroundColor: VIVID_PALETTE[0]
+        },
+        {
+          label: 'Предыдущий год',
+          data: row.previousSales,
+          backgroundColor: rgbaFrom(VIVID_PALETTE[1], 0.12),
+          borderColor: VIVID_PALETTE[1],
+          borderWidth: 3,
+          tension: 0.28,
+          pointBackgroundColor: VIVID_PALETTE[1]
+        }
+      ];
+      detailChart.update();
+    }
+    function showComparisonProductDetail(row) {
+      detailTitle.textContent = `${row.code} — ${row.name}`;
+      detailSub.textContent = `${row.subgroup} (${row.supplier})`;
+      const currentTotal = row.currentSales.reduce((a,b) => a+b, 0);
+      const previousTotal = row.previousSales.reduce((a,b) => a+b, 0);
+      const diffTotal = currentTotal - previousTotal;
+      const changeTotal = previousTotal > 0 ? ((currentTotal - previousTotal) / previousTotal * 100) : 0;
+      detailTotal.textContent = `${currentTotal.toLocaleString('ru-RU')} (${diffTotal >= 0 ? '+' : ''}${diffTotal.toLocaleString('ru-RU')}, ${changeTotal >= 0 ? '+' : ''}${changeTotal.toFixed(2)}%)`;
+      if(!detailChart) createDetailChart();
+      detailChart.data.labels = window.activeMonths;
+      detailChart.data.datasets = [
+        {
+          label: 'Текущий год',
+          data: row.currentSales,
+          backgroundColor: rgbaFrom(VIVID_PALETTE[0], 0.12),
+          borderColor: VIVID_PALETTE[0],
+          borderWidth: 3,
+          tension: 0.28,
+          pointBackgroundColor: VIVID_PALETTE[0]
+        },
+        {
+          label: 'Предыдущий год',
+          data: row.previousSales,
+          backgroundColor: rgbaFrom(VIVID_PALETTE[1], 0.12),
+          borderColor: VIVID_PALETTE[1],
+          borderWidth: 3,
+          tension: 0.28,
+          pointBackgroundColor: VIVID_PALETTE[1]
+        }
+      ];
+      detailChart.update();
+    }
+    function rgbaFrom(hex, alpha) { 
+      const bigint = parseInt(hex.slice(1), 16); 
+      const r = (bigint >> 16) & 255; 
+      const g = (bigint >> 8) & 255; 
+      const b = bigint & 255; 
+      return `rgba(${r},${g},${b},${alpha})`; 
+    }
+    // Event listeners
+    subgroupSearch.addEventListener('input', applyFiltersDebounced);
+    supplierSearch.addEventListener('input', applyFiltersDebounced);
+    selectAllBtn.addEventListener('click', () => { 
+      for(const o of subgroupSelect.options) o.selected = true; 
+      for(const o of supplierSelect.options) o.selected = true; 
+      applyFilters(); 
+    });
+    deselectAllBtn.addEventListener('click', () => { 
+      for(const o of subgroupSelect.options) o.selected = false; 
+      for(const o of supplierSelect.options) o.selected = false; 
+      applyFilters(); 
+    });
+    subgroupSelect.addEventListener('change', () => { 
+      page = 1; 
+      applyFilters(); 
+    });
+    supplierSelect.addEventListener('change', () => { 
+      page = 1; 
+      applyFilters(); 
+    });
+    viewMode.addEventListener('change', () => { 
+      page = 1; 
+      applyFilters(); 
+    });
+    globalSearch.addEventListener('input', applyFiltersDebounced);
+    minShareFilter.addEventListener('input', applyFiltersDebounced);
+    pageSizeSel.addEventListener('change', () => { 
+      page = 1; 
+      applyFilters(); 
+    });
+    prevPageBtn.addEventListener('click', () => { 
+      if(page > 1) { 
+        page--; 
+        sortAndPaginate(); 
+      } 
+    });
+    nextPageBtn.addEventListener('click', () => { 
+      const ps = parseInt(pageSizeSel.value); 
+      const tp = Math.max(1, Math.ceil(filtered.length/ps)); 
+      if(page < tp) { 
+        page++; 
+        sortAndPaginate(); 
+      } 
+    });
+    stackToggle.addEventListener('click', () => { 
+      stacked = !stacked; 
+      stackToggle.textContent = stacked ? 'Стек: ВКЛ' : 'Стек: ВЫКЛ'; 
+      sortAndPaginate(); 
+    });
+    downloadChartBtn.addEventListener('click', () => { 
+      if(!mainChart) return; 
+      const url = mainChart.toBase64Image(); 
+      const a = document.createElement('a'); 
+      a.href = url; 
+      a.download = 'sales-chart.png'; 
+      a.click(); 
+    });
+    exportCSVBtn.addEventListener('click', exportCurrentTableCSV);
+    resetBtn.addEventListener('click', resetState);
+    clearSelectionBtn.addEventListener('click', () => { 
+      detailTitle.textContent = '—'; 
+      detailSub.textContent = '—'; 
+      detailTotal.textContent = '0'; 
+      if(detailChart) { 
+        detailChart.data.datasets = []; 
+        detailChart.update(); 
+      } 
+    });
+    // === НОВЫЕ СЛУШАТЕЛИ ДЛЯ МЕСЯЦЕВ ===
+    startMonthSelect.addEventListener('change', applyFiltersDebounced);
+    endMonthSelect.addEventListener('change', applyFiltersDebounced);
+    function exportCurrentTableCSV() { 
+      const wb = XLSX.utils.book_new();
+      const wsData = [];
+      const headers = Array.from(thead.querySelectorAll('th')).map(th => th.innerText.replace('\n',' '));
+      wsData.push(headers);
+      const activeMonths = window.activeMonths || months;
+      if(currentMode === 'compare') {
+        if(viewMode.value === 'group') {
+          for(const row of filtered) {
+            const dataRow = [row.group];
+            for(let i = 0; i < activeMonths.length; i++) {
+              dataRow.push(row.currentSales[i], row.previousSales[i], row.diffs[i], row.changes[i] + '%');
+            }
+            wsData.push(dataRow);
+          }
+        } else {
+          for(const row of filtered) {
+            const dataRow = [row.code, row.name, row.subgroup, row.supplier];
+            for(let i = 0; i < activeMonths.length; i++) {
+              dataRow.push(row.currentSales[i], row.previousSales[i], row.diffs[i], row.changes[i] + '%');
+            }
+            wsData.push(dataRow);
+          }
+        }
+      } else if(viewMode.value === 'group') {
+        const monthTotals = new Array(activeMonths.length).fill(0);
+        for(const row of filtered) {
+          for(let i = 0; i < activeMonths.length; i++) {
+            monthTotals[i] += row.sales[i];
+          }
+        }
+        for(const row of filtered) {
+          const dataRow = [row.group];
+          for(let i = 0; i < activeMonths.length; i++) {
+            dataRow.push(row.sales[i], (monthTotals[i] > 0 ? (row.sales[i] / monthTotals[i] * 100).toFixed(2) + '%' : '0%'));
+          }
+          wsData.push(dataRow);
+        }
+      } else {
+        const monthTotals = new Array(activeMonths.length).fill(0);
+        for(const item of filtered) {
+          for(let i = 0; i < activeMonths.length; i++) {
+            monthTotals[i] += item.sales[i];
+          }  
+        }
+        for(const item of filtered) {
+          const dataRow = [item.code, item.name, item.subgroup, item.supplier, item.sheet];
+          for(let i = 0; i < activeMonths.length; i++) {
+            dataRow.push(item.sales[i], (monthTotals[i] > 0 ? (item.sales[i] / monthTotals[i] * 100).toFixed(2) + '%' : '0%'));
+          }
+          wsData.push(dataRow);
+        }
+      }
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+      XLSX.utils.book_append_sheet(wb, ws, "SalesData");
+      XLSX.writeFile(wb, "export.xlsx");
+    }
+    function initEmptyTable() { 
+      thead.innerHTML = ''; 
+      tbody.innerHTML = ''; 
+      const tr = document.createElement('tr'); 
+      addTh(tr, '(Пусто)', null, false); 
+      thead.appendChild(tr); 
+    }
+    initEmptyTable();
+    let _deb = null; 
+    function applyFiltersDebounced() { 
+      clearTimeout(_deb); 
+      _deb = setTimeout(() => applyFilters(), 300);
+    }
+  })();
+  </script>
+</body>
+</html>
